@@ -1,11 +1,11 @@
 <?php
-/**
- * Dokumentasi Pengerjaan Kelompok
- * Nama Kelompok : Stay Alone
- * Kelas : 12.5E.04
- * Ketua : Ari Wibisono - 12170272
- * Anggota : NULL
- */
+// Dokumentasi Pengerjaan Kelompok
+// Nama kelompok : Critical Thinking
+// Kelas : 12.5E.04.02
+// Ketua : Ari Wibisono - 12170282
+// Anggota : Sri Sunarti - 12170113
+//         : Ratna Ningsih - 12171640
+//
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 require APPPATH . '/libraries/REST_Controller.php';
@@ -20,23 +20,21 @@ class Rest_member extends REST_Controller {
         $this->load->database();
     }
 
-    function index_get() {
+    function index_get($id = 0) {
         // Deskripsi Fungsi :
         // ----------------------------------------------------------------------------------
         // Script dibawah ini merupakan implementasi dari metode GET
         // ----------------------------------------------------------------------------------
 
-        // get id variable data
-        $id = $this->get('id');
-        // checked data is null -> get all data result member
-        if ($id == '') {
+        // check data apakah kosong -> jika benar get all data member
+        if (empty($id)) {
             $member = $this->db->get('member')->result();
         } else {
-            // else data is not null , search data by id
+            // jika data tidak sama dengan kosong , cari data berdasarkan ID
             $this->db->where('id', $id);
             $member = $this->db->get('member')->result();
         }
-        // response member for send data to json for can use client programming
+        // menampilkan data variable member
         $this->response($member, 404);
 
         //500 error
@@ -46,36 +44,59 @@ class Rest_member extends REST_Controller {
 
     public function index_post()
     {
-        $input = $this->input->post();
-        $insert = $this->db->insert('member',$input);
-        if($insert) {
-            $this->response($input, 200);
+        // memasukkan type input post ke variabel $data
+        $data = $this->input->post();
+
+        // input data member
+        $insert = $this->db->insert('member',$data);
+
+        // jika input true maka tampil data
+        if($insert == true) {
+            $this->response($data, 200);
         }else{
+            // jika salah maka tampil status fail
             $this->response(array('status' => 'fail',502));
         }
+        //500 error
+        //200 success
+        //404 not found
     }
 
     public function index_put($id)
     {
+        // mencari type input put ke variabel $data
         $data = $this->put();
+
+        //update data berdasarkan id
         $update = $this->db->update('member', $data, array('id'=>$id));
 
+        // jika update true maka tampil data
         if($update) {
             $this->response($data, 200);
         }else{
+            // jika salah maka tampil status fail
             $this->response(array('status' => 'fail',502));
         }
+        //500 error
+        //200 success
+        //404 not found
     }
 
     public function index_delete($id)
     {
+        // delete data member berdasarkan id
         $delete = $this->db->delete('member', array('id'=>$id));
 
+        //jika delete true maka tampil status sukses
         if($delete) {
             $this->response(array('status' => 'sukses'), 200);
         }else{
+            //jika delete false maka tampil status fail
             $this->response(array('status' => 'fail',502));
         }
+        //500 error
+        //200 success
+        //404 not found
     }
 }
 ?>
